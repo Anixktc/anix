@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MechQuest — Semester V Study Adventure</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Zen+Dots&display=swap">
+<style>
+:root{--bg1:#fff4fa;--bg2:#e6e1ff;--card:rgba(255,255,255,.78);--line:rgba(90,70,160,.16);--ink:#241a4d;--muted:#6d65a0;--pink:#e8438f;--cyan:#0f9fc0;--gold:#c98a00;--violet:#6a49e8;--glow:rgba(106,73,232,.18);--chip:rgba(106,73,232,.1);--on:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#0b0922;--bg2:#1c1248;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--ink:#f2efff;--muted:#a9a3d6;--pink:#ff7eb6;--cyan:#6be9ff;--gold:#ffd86b;--violet:#a58bff;--glow:rgba(165,139,255,.28);--chip:rgba(255,255,255,.08)}}
+:root[data-theme="dark"]{--bg1:#0b0922;--bg2:#1c1248;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--ink:#f2efff;--muted:#a9a3d6;--pink:#ff7eb6;--cyan:#6be9ff;--gold:#ffd86b;--violet:#a58bff;--glow:rgba(165,139,255,.28);--chip:rgba(255,255,255,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{font-family:'Nunito','Trebuchet MS',sans-serif;color:var(--ink);line-height:1.5;min-height:100vh;background:radial-gradient(ellipse at 15% 0%,rgba(255,126,182,.22),transparent 40%),radial-gradient(ellipse at 90% 10%,rgba(107,233,255,.16),transparent 38%),linear-gradient(165deg,var(--bg1),var(--bg2));background-attachment:fixed;padding:22px 14px 60px;overflow-x:hidden}
+button,input{font:inherit;color:inherit}button{cursor:pointer}
+.wrap{max-width:1120px;margin:auto;position:relative;z-index:2}
+.petal{position:fixed;top:-24px;width:10px;height:13px;background:var(--pink);border-radius:80% 0 80% 0;opacity:.45;animation:fall linear infinite;pointer-events:none;z-index:1}
+@keyframes fall{to{transform:translate3d(60px,110vh,0) rotate(540deg)}}
+.glass{background:var(--card);border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 34px var(--glow)}
+.hero{position:relative;overflow:hidden;padding:28px clamp(18px,4vw,40px);display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.hero:before{content:"機械";position:absolute;right:-8px;bottom:-34px;font:900 9rem/1 'Zen Dots',sans-serif;color:var(--violet);opacity:.1;pointer-events:none}
+.tag{display:inline-block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--pink);background:var(--chip);border:1px solid var(--line);padding:5px 12px;border-radius:99px}
+h1{font:400 clamp(1.9rem,5vw,3.2rem)/1.1 'Zen Dots','Trebuchet MS',sans-serif;margin:14px 0 8px;background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);max-width:520px}
+.xpbar{margin-top:18px;max-width:520px}.xprow{display:flex;justify-content:space-between;font-size:.8rem;font-weight:800;margin-bottom:6px}
+.bar{height:12px;border-radius:99px;background:var(--chip);overflow:hidden;border:1px solid var(--line)}
+.fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));box-shadow:0 0 14px var(--pink);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.orb{position:relative;width:170px;height:170px;display:grid;place-items:center;text-align:center}
+.orb svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.orb .lv{font:400 2.4rem/1 'Zen Dots',sans-serif}.orb small{display:block;font-size:.66rem;letter-spacing:.14em;color:var(--muted);font-weight:800}.orb .em{font-size:1.5rem}
+.rank{font-weight:800;margin-top:6px;font-size:.85rem;color:var(--gold)}
+.daily{margin-top:16px;padding:20px;display:grid;grid-template-columns:auto 1fr;gap:20px}
+.streak{text-align:center;padding:6px 18px;border-right:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.flame{font-size:2.6rem;filter:drop-shadow(0 0 12px var(--pink));animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
+.streak b{font:400 2.2rem/1 'Zen Dots',sans-serif}.streak span{font-size:.75rem;color:var(--muted);font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.h3{font:400 .95rem 'Zen Dots',sans-serif;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.quests{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-bottom:14px}
+.quest{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:14px;background:var(--chip);border:1px solid var(--line);font-size:.86rem;font-weight:700}
+.quest.done{border-color:var(--cyan)}.quest .q{width:26px;height:26px;border-radius:9px;border:2px solid var(--line);display:grid;place-items:center;flex-shrink:0;font-size:.8rem}
+.quest.done .q{background:var(--cyan);color:#06222b;border-color:var(--cyan)}.quest em{margin-left:auto;font-style:normal;color:var(--gold);font-size:.78rem;white-space:nowrap}
+.cta{border:0;border-radius:14px;padding:11px 18px;font-weight:800;color:#fff;background:linear-gradient(90deg,var(--pink),var(--violet));box-shadow:0 6px 22px var(--glow);transition:transform .2s}
+.cta:hover:not(:disabled){transform:translateY(-2px) scale(1.02)}.cta:disabled{background:var(--chip);color:var(--muted);box-shadow:none;cursor:default}
+.days{display:grid;grid-template-columns:repeat(14,1fr);gap:5px;margin-bottom:14px}
+.day{aspect-ratio:1;border-radius:9px;background:var(--chip);border:1px solid var(--line);display:grid;place-items:center;font-size:.62rem;color:var(--muted);font-weight:800}
+.day.on{background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;border-color:transparent}.day.on.hi{box-shadow:0 0 12px var(--pink)}.day.today{outline:2px solid var(--cyan);outline-offset:1px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{flex:1;min-width:120px;padding:9px 11px;border-radius:14px;background:var(--chip);border:1px solid var(--line);font-size:.76rem;font-weight:800;text-align:center;opacity:.55;filter:grayscale(.8)}
+.badge.got{opacity:1;filter:none;border-color:var(--gold);box-shadow:0 0 14px var(--glow)}.badge i{display:block;font-style:normal;font-size:1.4rem}.badge span{color:var(--muted);font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.stat{padding:15px 17px;display:flex;align-items:center;gap:12px}.stat .ic{font-size:1.6rem}.stat b{font:400 1.3rem 'Zen Dots',sans-serif;display:block}.stat span{font-size:.75rem;color:var(--muted);font-weight:700}
+.ctrl{padding:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:6px}
+.search{flex:1;min-width:200px;padding:11px 14px;border-radius:13px;border:1px solid var(--line);background:var(--chip);outline:none}.search:focus{border-color:var(--cyan);box-shadow:0 0 0 3px var(--glow)}
+.btn{padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--chip);font-weight:800;font-size:.82rem;transition:.2s}.btn:hover{border-color:var(--violet)}.btn.active{background:var(--violet);color:#fff}
+.kick{font:400 .75rem 'Zen Dots',sans-serif;letter-spacing:.12em;color:var(--muted);margin:20px 0 10px}
+.tabs{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 12px}
+.tab{padding:11px 15px;border-radius:15px;border:1px solid var(--line);background:var(--card);white-space:nowrap;font-weight:800;font-size:.84rem;color:var(--muted);transition:.2s}
+.tab.active{color:#fff;background:linear-gradient(90deg,var(--violet),var(--pink));border-color:transparent;box-shadow:0 6px 22px var(--glow)}
+.tab small{opacity:.8;margin-left:6px}
+.banner{padding:18px 20px;margin:6px 0 14px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.banner h2{font:400 1.15rem 'Zen Dots','Trebuchet MS',sans-serif}.banner p{font-size:.82rem;color:var(--muted)}.banner .bar{width:min(220px,40vw);margin-top:8px}
+.banner .sym{font-size:2rem}
+.unit{margin-bottom:12px;overflow:hidden}
+.uh{padding:15px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;user-select:none;border-bottom:1px solid var(--line)}
+.ut{font:400 .88rem 'Zen Dots','Trebuchet MS',sans-serif;display:flex;gap:10px;align-items:center}
+.ub{font-size:.72rem;font-weight:800;padding:4px 10px;border-radius:99px;background:var(--chip);color:var(--violet);white-space:nowrap}.ub.done{background:var(--cyan);color:#06222b}
+ul{list-style:none;padding:4px 18px 8px}
+.topic{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}.topic:last-child{border:0}
+.topic input{appearance:none;-webkit-appearance:none;width:22px;height:22px;border:2px solid var(--line);border-radius:8px;flex-shrink:0;display:grid;place-items:center;cursor:pointer;margin-top:1px;transition:.2s}
+.topic input:checked{background:linear-gradient(135deg,var(--pink),var(--violet));border-color:transparent;box-shadow:0 0 10px var(--pink)}.topic input:checked:after{content:"✓";color:#fff;font-size:13px;font-weight:900}
+.topic label{flex:1;cursor:pointer;font-size:.9rem}.topic.c label{text-decoration:line-through;color:var(--muted)}
+.hy{font-size:.64rem;font-weight:800;color:var(--gold);border:1px solid var(--gold);padding:1px 7px;border-radius:6px;margin-left:7px;white-space:nowrap}
+.uf{padding:0 18px 13px;font-size:.75rem;color:var(--muted);display:flex;justify-content:space-between;gap:10px}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,120px);background:linear-gradient(90deg,var(--violet),var(--pink));color:#fff;padding:12px 20px;border-radius:99px;font-weight:800;font-size:.88rem;box-shadow:0 12px 34px var(--glow);z-index:20;opacity:0;transition:.35s;max-width:92vw;text-align:center}.toast.show{transform:translate(-50%,0);opacity:1}
+.modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(8,5,30,.7);z-index:30;padding:20px}.modal.show{display:grid}
+.mcard{text-align:center;padding:34px 40px;max-width:360px;animation:pop .5s cubic-bezier(.2,1.4,.4,1);background:var(--bg2);color:var(--ink);border:1px solid var(--pink);border-radius:26px;box-shadow:0 0 60px var(--pink)}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+.mcard .big{font-size:3rem}.mcard h3{font:400 1.8rem 'Zen Dots',sans-serif;background:linear-gradient(90deg,var(--pink),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;margin:6px 0}.mcard p{color:var(--muted);margin-bottom:16px}
+.foot{text-align:center;color:var(--muted);font-size:.76rem;margin-top:26px}
+@media(max-width:700px){.hero{grid-template-columns:1fr;justify-items:start}.orb{width:140px;height:140px}.daily{grid-template-columns:1fr}.streak{border-right:0;border-bottom:1px dashed var(--line);padding-bottom:14px;flex-direction:row;justify-content:center;gap:12px}.stats{gap:8px}.stat{flex-direction:column;align-items:flex-start;padding:12px}.banner{flex-direction:column;align-items:flex-start}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.petal{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero glass">
+    <div>
+      <span class="tag">✦ Semester V · 機械クエスト</span>
+      <h1>MechQuest</h1>
+      <p>Study a little every day, earn XP, keep your streak burning, and level up from Rookie to Legendary Innovator.</p>
+      <div class="xpbar"><div class="xprow"><span id="xpTxt">0 / 100 XP</span><span id="nextTxt">Next: Level 2</span></div><div class="bar"><div class="fill" id="xpFill"></div></div></div>
+    </div>
+    <div>
+      <div class="orb">
+        <svg viewBox="0 0 170 170" width="100%" height="100%"><circle cx="85" cy="85" r="76" fill="none" stroke="var(--line)" stroke-width="9"/><circle id="ring" cx="85" cy="85" r="76" fill="none" stroke="var(--pink)" stroke-width="9" stroke-linecap="round" stroke-dasharray="477.5" stroke-dashoffset="477.5" style="transition:stroke-dashoffset .7s;filter:drop-shadow(0 0 6px var(--pink))"/></svg>
+        <div><div class="em" id="rIcon">🌱</div><small>LEVEL</small><div class="lv" id="lvl">1</div></div>
+      </div>
+      <div class="rank" style="text-align:center" id="rName">Rookie Engineer</div>
+    </div>
+  </header>
+
+  <section class="daily glass" aria-label="Daily tracker">
+    <div class="streak"><div class="flame">🔥</div><div><b id="streakN">0</b><br><span>day streak</span></div></div>
+    <div>
+      <div class="h3"><span>Daily Quests</span><button class="cta" id="checkBtn">✦ Check in today</button></div>
+      <div class="quests" id="quests"></div>
+      <div class="h3"><span>Last 14 days</span></div>
+      <div class="days" id="days"></div>
+      <div class="h3"><span>Streak rewards</span></div>
+      <div class="badges" id="badges"></div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat glass"><div class="ic">⚡</div><div><b id="xpStat">0</b><span>Total XP</span></div></div>
+    <div class="stat glass"><div class="ic">🏆</div><div><b id="doneStat">0</b><span>Topics mastered</span></div></div>
+    <div class="stat glass"><div class="ic">🎯</div><div><b id="leftStat">0</b><span>Quests remaining</span></div></div>
+  </section>
+
+  <section class="ctrl glass">
+    <input class="search" id="search" placeholder="Search a topic, formula or keyword…">
+    <button class="btn" id="impBtn">⭐ High-yield (+15 XP)</button>
+    <button class="btn" id="resetBtn">↺ Reset topics</button>
+  </section>
+
+  <div class="kick">CHOOSE YOUR ZONE</div>
+  <nav class="tabs" id="tabs"></nav>
+  <main id="content"></main>
+  <div class="foot">Progress is saved on this device ✨ · 10 XP per topic, 15 for high-yield</div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="modal" id="modal"><div class="mcard"><div class="big">✨</div><h3>LEVEL UP!</h3><p id="mTxt"></p><button class="cta" id="mClose">Keep going</button></div></div>
+
+<script>
+const syllabusData = [
+  {
+    id: "at",
+    title: "Applied Thermodynamics",
+    units: [
+      {
+        unit: "Unit 1: Fuels and Combustion",
+        topics: [
+          { name: "Types of fuels, proximate & ultimate analysis", imp: false },
+          { name: "Calorific values of fuel & determination (Bomb Calorimeter)", imp: true },
+          { name: "Combustion equation for hydrocarbon fuel & stoichiometric air requirement", imp: true },
+          { name: "Excess air calculation & flue gas analysis (Orsat apparatus)", imp: true },
+          { name: "Conversion of volumetric analysis to mass analysis", imp: false }
+        ]
+      },
+      {
+        unit: "Unit 2: Steam Generator",
+        topics: [
+          { name: "Boiler classifications, Fire tube vs Water tube comparisons", imp: false },
+          { name: "Boiler mountings and accessories functions", imp: true },
+          { name: "Boiler Draught: Natural vs Artificial, Chimney height & efficiency calculations", imp: true },
+          { name: "Equivalent evaporation and Boiler efficiency evaluation", imp: true },
+          { name: "Boiler trial & Heat Balance Sheet preparation", imp: true },
+          { name: "Waste heat recovery systems & IBR introduction", imp: false }
+        ]
+      },
+      {
+        unit: "Unit 3: Vapor and Gas Power Cycle",
+        topics: [
+          { name: "Ideal Rankine cycle (T-s & h-s analysis, thermal efficiency)", imp: true },
+          { name: "Reheat & Regenerative Rankine cycles with feed heaters", imp: true },
+          { name: "Specific steam consumption, work ratio, and heat rate", imp: true },
+          { name: "Air standard Otto, Diesel, and Dual cycles", imp: true },
+          { name: "Stirling cycle and Joule-Brayton gas cycle", imp: false }
+        ]
+      },
+      {
+        unit: "Unit 4: Steam Nozzle, Condensers & Steam Turbine",
+        topics: [
+          { name: "Steam flow through nozzles & area-velocity-pressure relations", imp: false },
+          { name: "Condition for maximum discharge (Critical pressure ratio)", imp: true },
+          { name: "Nozzle efficiency & super-saturated flow phenomenon", imp: true },
+          { name: "Condensers: Jet vs Surface, Dalton's law, Vacuum & Condenser efficiency", imp: true },
+          { name: "Cooling towers: Natural & mechanical draft", imp: false },
+          { name: "Turbine compounding (Velocity and Pressure compounding)", imp: true },
+          { name: "Velocity triangles, work done, blade and diagram efficiencies", imp: true }
+        ]
+      },
+      {
+        unit: "Unit 5: Reciprocating & Rotary Air Compressors",
+        topics: [
+          { name: "Reciprocating compressor: Single stage indicator diagram, work done, FAD", imp: true },
+          { name: "Multistage compression with intercooling & condition for minimum work", imp: true },
+          { name: "Volumetric, isothermal, and polytropic efficiency", imp: true },
+          { name: "Rotary Compressors: Roots blower, Vane compressor working", imp: false },
+          { name: "Centrifugal compressors, velocity diagram & slip factor", imp: true }
+        ]
+      }
+    ]
+  },
+  {
+    id: "pp2",
+    title: "Production Processes - II",
+    units: [
+      {
+        unit: "Unit 1: Mechanics of Metal Cutting",
+        topics: [
+          { name: "Single-point cutting tool geometry & tool signature (ASA)", imp: true },
+          { name: "Mechanism of chip formation & types of chips (continuous, BUE, discontinuous)", imp: true },
+          { name: "Merchant's Circle Diagram (MCD) force analysis", imp: true },
+          { name: "Shear angle relations: Merchant's theory & Lee-Shaffer theory", imp: true },
+          { name: "Specific cutting energy, friction & size effect in machining", imp: false }
+        ]
+      },
+      {
+        unit: "Unit 2: Thermal Aspects, Tool Wear & Machinability",
+        topics: [
+          { name: "Heat generation zones & cutting temperature measurement methods", imp: true },
+          { name: "Progressive tool wear: Flank wear vs Crater wear mechanisms", imp: true },
+          { name: "Taylor's Tool Life Equation (VT^n = C) and derivation problems", imp: true },
+          { name: "Tool materials: HSS, Cemented Carbides, Ceramics, CBN, Diamond", imp: true },
+          { name: "Machinability rating, criteria & cutting fluids selection", imp: false }
+        ]
+      },
+      {
+        unit: "Unit 3: Abrasive Machining & Finishing Operations",
+        topics: [
+          { name: "Grinding wheel designation system (grain, grade, structure, bond)", imp: true },
+          { name: "Mechanics of grinding, grinding forces & specific energy", imp: false },
+          { name: "Grinding ratio (G-ratio), wheel wear & wheel loading/glazing", imp: true },
+          { name: "Dressing, Truing, and Balancing of grinding wheels", imp: true },
+          { name: "Finishing operations: Honing, Lapping, and Superfinishing", imp: true }
+        ]
+      },
+      {
+        unit: "Unit 4: Processing of Powder Metals",
+        topics: [
+          { name: "Powder manufacturing methods (Atomization, chemical, electrolytic)", imp: true },
+          { name: "Particle characteristics, size distribution, and powder blending", imp: false },
+          { name: "Compaction of metal powders & Isostatic pressing (Cold/Hot)", imp: true },
+          { name: "Sintering theory, stages, and atmospheric controls", imp: true },
+          { name: "Secondary operations: Sizing, coining, infiltration, impregnation", imp: false }
+        ]
+      },
+      {
+        unit: "Unit 5: Processing of Polymers",
+        topics: [
+          { name: "Extrusion process & polymer screw design features", imp: false },
+          { name: "Injection molding machine layout, cycle & defect diagnosis", imp: true },
+          { name: "Blow molding (extrusion & injection) for hollow parts", imp: true },
+          { name: "Rotational molding & Thermoforming (Vacuum forming)", imp: false },
+          { name: "Compression & Transfer molding comparison for thermosets", imp: true }
+        ]
+      }
+    ]
+  },
+  {
+    id: "tom1",
+    title: "Theory of Machines - I",
+    units: [
+      {
+        unit: "Unit 1: Introduction to Mechanisms",
+        topics: [
+          { name: "Links, kinematic pairs, kinematic chains, and inversions", imp: false },
+          { name: "Degrees of freedom: Kutzbach and Gruebler's criteria", imp: true },
+          { name: "Inversions of single slider crank and double slider crank chains", imp: true },
+          { name: "Straight line mechanisms, Pantograph, and Geneva drive", imp: false },
+          { name: "Steering gear mechanisms: Davis and Ackermann comparison & condition", imp: true }
+        ]
+      },
+      {
+        unit: "Unit 2: Velocity & Acceleration Analysis",
+        topics: [
+          { name: "Instantaneous Centre of Rotation (ICR) & Kennedy's theorem", imp: true },
+          { name: "Relative Velocity and Acceleration method for planar linkages", imp: true },
+          { name: "Coriolis component of acceleration (direction, magnitude 2wv, applications)", imp: true },
+          { name: "Klein's construction for slider crank mechanism velocity & acceleration", imp: true }
+        ]
+      },
+      {
+        unit: "Unit 3: Friction and Lubrication",
+        topics: [
+          { name: "Friction in screw jack, self-locking condition, torque & efficiency", imp: true },
+          { name: "Uniform Pressure vs Uniform Wear theories in pivot and collar bearings", imp: true },
+          { name: "Friction axis, friction circle in turning pairs", imp: false },
+          { name: "Boundary, hydrodynamic, and hydrostatic lubrication regimes", imp: true }
+        ]
+      },
+      {
+        unit: "Unit 4: Cams and Followers",
+        topics: [
+          { name: "Types of cams and followers, motion characteristics", imp: false },
+          { name: "Follower motions: Uniform velocity, SHM, Uniform acceleration/deceleration, Cycloidal", imp: true },
+          { name: "Cam profile layout generation for roller & knife-edge followers", imp: true },
+          { name: "Jump speed of follower and cam ramp considerations", imp: true }
+        ]
+      },
+      {
+        unit: "Unit 5: Balancing",
+        topics: [
+          { name: "Static and Dynamic balancing definitions & requirements", imp: true },
+          { name: "Balancing of rotating masses in a single plane and multiple planes", imp: true },
+          { name: "Primary and secondary balancing of reciprocating masses", imp: true },
+          { name: "Direct and reverse cranks method for radial/V-engines", imp: true },
+          { name: "Partial balancing of locomotive engines (hammer blow, swaying couple)", imp: true }
+        ]
+      }
+    ]
+  },
+  {
+    id: "smp",
+    title: "Sheet Metal Processing",
+    units: [
+      {
+        unit: "Unit 1: Introduction",
+        topics: [
+          { name: "Importance and economy of sheet metal engineering", imp: false },
+          { name: "Materials for sheet metal components, punches, and dies", imp: true },
+          { name: "Desirable mechanical properties of sheet metals", imp: false }
+        ]
+      },
+      {
+        unit: "Unit 2: Blanking & Punching Applications",
+        topics: [
+          { name: "Mechanics of shearing & sheared edge zones (rollover, burnish, fracture, burr)", imp: true },
+          { name: "Blanking vs Punching clearance calculation & die sizing rules", imp: true },
+          { name: "Estimation of cutting force & reduction of force using shear on tools", imp: true },
+          { name: "Minimum hole diameter for punching", imp: false },
+          { name: "Strippers (fixed & movable) and stripping force calculation", imp: true },
+          { name: "Fine blanking process principles and tooling", imp: true }
+        ]
+      },
+      {
+        unit: "Unit 3: Bending, Center of Pressure & Strip Layout",
+        topics: [
+          { name: "V-bending, Edge bending, bottoming vs air bending", imp: true },
+          { name: "Bend allowance, neutral axis shift factor, and minimum bend radius", imp: true },
+          { name: "Springback phenomenon, influencing factors, and compensation methods", imp: true },
+          { name: "Center of Pressure determination for asymmetrical blanks", imp: true },
+          { name: "Stock strip layout, percentage scrap/economy calculation", imp: true },
+          { name: "Formability testing: Erichsen cupping test & Forming Limit Diagram (FLD)", imp: true }
+        ]
+      },
+      {
+        unit: "Unit 4: Sheet Metal Drawing",
+        topics: [
+          { name: "Mechanics of deep drawing & stress state in flange/wall", imp: true },
+          { name: "Blank diameter calculation using surface area conservation", imp: true },
+          { name: "Drawing force & blank holding force calculations", imp: true },
+          { name: "Limiting Draw Ratio (LDR) and percentage reduction per draw", imp: true },
+          { name: "Deep drawing defects: Wrinkling, tearing, orange peel, earing", imp: true },
+          { name: "Ironing and reverse redrawing processes", imp: false }
+        ]
+      },
+      {
+        unit: "Unit 5: Dies, Presses & High-Energy Forming",
+        topics: [
+          { name: "Compound die, Progressive die, and Combination die comparison", imp: true },
+          { name: "Mechanical vs Hydraulic press comparison and selection", imp: true },
+          { name: "Coining, Embossing, Spinning, and Stretch forming", imp: false },
+          { name: "High Energy Rate Forming: Explosive, Electro-hydraulic, Electromagnetic", imp: true },
+          { name: "Guerin rubber pad forming process", imp: false }
+        ]
+      }
+    ]
+  },
+  {
+    id: "mqc",
+    title: "Metrology & Quality Control",
+    units: [
+      {
+        unit: "Unit 1: Measurement Standards & Comparators",
+        topics: [
+          { name: "Line, End, and Wavelength standards; Abbe's alignment principle", imp: true },
+          { name: "Sources of errors in measurement & instrument calibration", imp: false },
+          { name: "Slip gauges, wringing phenomenon, and angle measurement (Sine bar)", imp: true },
+          { name: "Comparators: Mechanical, Pneumatic (Solex), and LVDT", imp: true }
+        ]
+      },
+      {
+        unit: "Unit 2: Interferometry, Surface Finish & Tolerancing",
+        topics: [
+          { name: "Interference principles, Optical flats, and fringe pattern interpretation", imp: true },
+          { name: "Surface roughness parameters: Ra, Rz, Rmax, RMS & stylus instruments", imp: true },
+          { name: "Limits, Fits, and Tolerances: Hole Basis vs Shaft Basis systems", imp: true },
+          { name: "Taylor's Principle of Gauge Design (Plug and Ring gauge sizing)", imp: true }
+        ]
+      },
+      {
+        unit: "Unit 3: Screw Thread & Gear Metrology",
+        topics: [
+          { name: "Screw thread elements: Pitch, major, minor, and effective diameter", imp: false },
+          { name: "Effective diameter measurement: Two-wire and Three-wire methods", imp: true },
+          { name: "Floating Carriage Diameter Measuring Machine", imp: true },
+          { name: "Gear inspection: Gear Tooth Vernier, rolling test, base tangent method", imp: true },
+          { name: "Coordinate Measuring Machines (CMM) & Laser metrology overview", imp: true }
+        ]
+      },
+      {
+        unit: "Unit 4: Quality & 7 Quality Tools",
+        topics: [
+          { name: "Cost of Quality (Internal, External, Prevention, Appraisal costs)", imp: true },
+          { name: "Quality of Design, Conformance, and Performance", imp: false },
+          { name: "Seven QC Tools: Pareto analysis, Fishbone (Ishikawa) diagram, Check sheet", imp: true },
+          { name: "Scatter diagrams, Histograms, Flowcharts, and Quality circles", imp: false }
+        ]
+      },
+      {
+        unit: "Unit 5: TQM & Statistical Quality Control",
+        topics: [
+          { name: "5S methodology, Kaizen, Kanban, JIT, Poka-Yoke, TPM", imp: true },
+          { name: "Control charts for variables (X-bar and R charts)", imp: true },
+          { name: "Control charts for attributes (p, np, c, u charts)", imp: true },
+          { name: "Process capability indices (Cp and Cpk) calculation and interpretation", imp: true },
+          { name: "Acceptance Sampling: Single/double sampling plans & OC curves", imp: false },
+          { name: "ISO 9000 quality management standards", imp: false }
+        ]
+      }
+    ]
+  }
+];
+
+const SKEY="mechquest_state_v2", CKEY="dbatu_mech_completed_v1";
+const ICONS={at:"🔥",pp2:"⚙️",tom1:"🔩",smp:"🛠️",mqc:"📐"};
+const RANKS=[[1,"Rookie Engineer","🌱"],[2,"Workshop Explorer","🧭"],[4,"Design Apprentice","🛠️"],[6,"Mechanics Specialist","⚙️"],[8,"Master Engineer","🏆"],[10,"Legendary Innovator","🚀"]];
+const MILES=[[3,"Spark","✨",50],[7,"Blaze","🔥",120],[14,"Inferno","☄️",250],[30,"Legend","👑",600]];
+const GOAL=3;
+let activeId=syllabusData[0].id, onlyImp=false, q="";
+
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let S=load(SKEY,{days:{},claimed:[],bonus:0});
+const xpOf={};syllabusData.forEach(s=>s.units.forEach(u=>u.topics.forEach((t,i)=>xpOf[`${s.id}_${u.unit}_${i}`]=t.imp?15:10)));
+
+const dk=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const today=()=>dk(new Date());
+const studied=k=>S.days[k]&&(S.days[k].c||S.days[k].t>0);
+function streak(){const d=new Date();if(!studied(dk(d)))d.setDate(d.getDate()-1);let n=0;while(studied(dk(d))){n++;d.setDate(d.getDate()-1)}return n}
+function topicXp(){const m=load(CKEY,{});return Object.keys(m).reduce((a,k)=>a+(m[k]&&xpOf[k]||0),0)}
+const totalXp=()=>topicXp()+S.bonus;
+function lvlInfo(xp){let l=1,need=100,r=xp;while(r>=need){r-=need;l++;need=100+(l-1)*25}return{l,r,need}}
+const rankOf=l=>RANKS.filter(r=>l>=r[0]).pop();
+
+let toastT;
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2600)}
+function claim(id,xp){if(S.claimed.includes(id))return false;S.claimed.push(id);S.bonus+=xp;return true}
+
+function act(fn){
+  const before=lvlInfo(totalXp()).l;const msgs=fn()||[];save(SKEY,S);
+  const st=streak();MILES.forEach(([n,name,ic,xp])=>{if(st>=n&&claim("streak_"+n,xp))msgs.push(`${ic} ${name} streak unlocked! +${xp} XP`)});save(SKEY,S);
+  render();const after=lvlInfo(totalXp()).l;
+  if(msgs.length)toast(msgs[msgs.length-1]);
+  if(after>before){const r=rankOf(after);document.getElementById("mTxt").textContent=`You reached Level ${after} · ${r[2]} ${r[1]}`;document.getElementById("modal").classList.add("show")}
+}
+function checkIn(){act(()=>{const k=today();S.days[k]=S.days[k]||{t:0,c:0};S.days[k].c=1;const st=streak();const xp=20+Math.min(st,7)*5;claim("checkin_"+k,xp);return[`✦ Checked in! +${xp} XP · ${st} day streak`]})}
+window.toggleTopic=function(key){
+  const m=load(CKEY,{});m[key]=!m[key];save(CKEY,m);
+  act(()=>{const k=today();S.days[k]=S.days[k]||{t:0,c:0};const msgs=[];
+    if(m[key]){S.days[k].t++;msgs.push(`Quest complete! +${xpOf[key]} XP ✨`);if(S.days[k].t>=GOAL&&claim("goal_"+k,30))msgs.push("🎯 Daily goal cleared! +30 XP")}
+    else S.days[k].t=Math.max(0,S.days[k].t-1);return msgs})
+};
+
+function render(){
+  const m=load(CKEY,{}),xp=totalXp(),L=lvlInfo(xp),R=rankOf(L.l),k=today(),dd=S.days[k]||{t:0,c:0},st=streak();
+  let tot=0,done=0;syllabusData.forEach(s=>s.units.forEach((u,)=>u.topics.forEach((t,i)=>{tot++;if(m[`${s.id}_${u.unit}_${i}`])done++})));
+  const $=id=>document.getElementById(id);
+  $("lvl").textContent=L.l;$("rIcon").textContent=R[2];$("rName").textContent=R[1];
+  $("xpTxt").textContent=`${L.r} / ${L.need} XP`;$("nextTxt").textContent=`Next: Level ${L.l+1}`;$("xpFill").style.width=(L.r/L.need*100)+"%";
+  $("ring").style.strokeDashoffset=477.5*(1-L.r/L.need);
+  $("xpStat").textContent=xp;$("doneStat").textContent=`${done}/${tot}`;$("leftStat").textContent=tot-done;
+  $("streakN").textContent=st;
+  const cb=$("checkBtn");const claimed=S.claimed.includes("checkin_"+k);cb.disabled=claimed;cb.textContent=claimed?"✓ Checked in today":`✦ Check in (+${20+Math.min(st+(studied(k)?0:1),7)*5} XP)`;
+  $("quests").innerHTML=`<div class="quest ${claimed?"done":""}"><span class="q">${claimed?"✓":""}</span>Check in and study today<em>+20 XP +streak bonus</em></div><div class="quest ${dd.t>=GOAL?"done":""}"><span class="q">${dd.t>=GOAL?"✓":""}</span>Master ${GOAL} topics (${Math.min(dd.t,GOAL)}/${GOAL})<em>+30 XP</em></div>`;
+  let dh="";for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const key=dk(d),r=S.days[key],on=studied(key);dh+=`<div class="day ${on?"on":""} ${r&&r.t>=GOAL?"hi":""} ${i===0?"today":""}" title="${key}">${d.getDate()}</div>`}
+  $("days").innerHTML=dh;
+  $("badges").innerHTML=MILES.map(([n,name,ic,x])=>`<div class="badge ${S.claimed.includes("streak_"+n)?"got":""}"><i>${ic}</i>${name}<br><span>${n} days · +${x} XP</span></div>`).join("");
+
+  const sub=syllabusData.find(s=>s.id===activeId);
+  $("tabs").innerHTML=syllabusData.map(s=>{let a=0,c=0;s.units.forEach(u=>u.topics.forEach((t,i)=>{a++;if(m[`${s.id}_${u.unit}_${i}`])c++}));return`<button class="tab ${s.id===activeId?"active":""}" data-id="${s.id}">${ICONS[s.id]||"📘"} ${s.title}<small>${Math.round(c/a*100)}%</small></button>`}).join("");
+  let sa=0,sc=0;sub.units.forEach(u=>u.topics.forEach((t,i)=>{sa++;if(m[`${sub.id}_${u.unit}_${i}`])sc++}));
+  const uic=["📘","🧠","⚡","🧪","🏁"];let html="";
+  sub.units.forEach((u,ui)=>{
+    let ts=u.topics.map((t,i)=>({...t,i}));if(onlyImp)ts=ts.filter(t=>t.imp);if(q)ts=ts.filter(t=>t.name.toLowerCase().includes(q)||u.unit.toLowerCase().includes(q));
+    if(!ts.length)return;const uc=u.topics.filter((_,i)=>m[`${sub.id}_${u.unit}_${i}`]).length,un=u.topics.length;
+    html+=`<section class="unit glass"><div class="uh" role="button" tabindex="0" aria-expanded="true"><span class="ut"><span>${uic[ui%5]}</span>${u.unit}</span><span class="ub ${uc===un?"done":""}">${uc}/${un} ✓</span></div><ul>${ts.map(t=>{const key=`${sub.id}_${u.unit}_${t.i}`;return`<li class="topic ${m[key]?"c":""}"><input type="checkbox" id="${key}" ${m[key]?"checked":""} onchange="toggleTopic('${key}')"><label for="${key}">${t.name}${t.imp?'<span class="hy">⭐ HIGH YIELD</span>':""}</label></li>`}).join("")}</ul><div class="uf"><span>${uc===un?"🎉 Zone cleared!":"Every topic earns XP"}</span><span>${Math.round(uc/un*100)}% explored</span></div></section>`});
+  if(!html)html=`<div class="empty glass"><div style="font-size:2.4rem">🔎</div><b>No quests found</b><p>Try another keyword or turn off the filter.</p></div>`;
+  $("content").innerHTML=`<div class="banner glass"><div><h2>${sub.title}</h2><p>${sc} of ${sa} topics mastered</p><div class="bar"><div class="fill" style="width:${sc/sa*100}%"></div></div></div><div class="sym">${ICONS[sub.id]||"✦"}</div></div>${html}`;
+  $("content").querySelectorAll(".uh").forEach(h=>{const ul=h.nextElementSibling,f=ul.nextElementSibling;const tg=()=>{const c=ul.style.display==="none";ul.style.display=f.style.display=c?"":"none";h.setAttribute("aria-expanded",String(c))};h.onclick=tg;h.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tg()}}});
+}
+
+document.getElementById("tabs").addEventListener("click",e=>{const b=e.target.closest(".tab");if(b){activeId=b.dataset.id;render()}});
+document.getElementById("search").addEventListener("input",e=>{q=e.target.value.toLowerCase().trim();render()});
+document.getElementById("impBtn").onclick=function(){onlyImp=!onlyImp;this.classList.toggle("active",onlyImp);render()};
+document.getElementById("resetBtn").onclick=()=>{if(confirm("Clear all checked topics? Your streak and bonus XP are kept.")){save(CKEY,{});render()}};
+document.getElementById("checkBtn").onclick=checkIn;
+document.getElementById("mClose").onclick=()=>document.getElementById("modal").classList.remove("show");
+for(let i=0;i<14;i++){const p=document.createElement("span");p.className="petal";p.style.left=Math.random()*100+"vw";p.style.animationDuration=(9+Math.random()*10)+"s";p.style.animationDelay=(-Math.random()*14)+"s";p.style.transform=`scale(${.6+Math.random()})`;document.body.appendChild(p)}
+render();
+</script>
+</body>
+</html>
